@@ -12,12 +12,22 @@ mod setup;
 use std::path::PathBuf;
 
 fn main() {
-    let result = setup::read_credentials()
-        .and_then(|it| api::fetch_withdrawals(&it));
+    let result = setup::read_report_type()
+        .and_then(|report_type| {
+            setup::read_credentials()
+                .and_then(|it| api::fetch_json(&it, &report_type))
+        });
     match result {
         Ok(it) => println!("{}", it),
         Err(e) => eprintln!("\nERROR\n=====\n{:?}", e),
     }
+}
+
+
+#[derive(Clone, PartialEq, Debug)]
+pub enum ReportType {
+    Deposits,
+    Withdrawals,
 }
 
 #[derive(Clone, PartialEq, Debug)]
@@ -34,6 +44,7 @@ pub enum AppError {
     LoadYamlFailed(String),
     MissingApiKeyOrSecret,
     RequestFailed(String),
+    MissingOrInvalidReportType(String),
 }
 
 
@@ -42,12 +53,12 @@ mod api {
     use chrono::prelude::*;
     use serialize::hex::ToHex;
 
-    pub fn fetch_deposits(credentials: &Credentials) -> Result<String, AppError> {
-        api::Request::new(api::DEPOSITS_URI_STRING, credentials).fetch()
-    }
-
-    pub fn fetch_withdrawals(credentials: &Credentials) -> Result<String, AppError> {
-        api::Request::new(api::WITHDRAWALS_URI_STRING, credentials).fetch()
+    pub fn fetch_json(credentials: &Credentials, report_type: &ReportType) -> Result<String, AppError> {
+        let uri = match report_type {
+            &ReportType::Deposits => DEPOSITS_URI_STRING,
+            &ReportType::Withdrawals => WITHDRAWALS_URI_STRING,
+        };
+        api::Request::new(uri, credentials).fetch()
     }
 
     const DEPOSITS_URI_STRING: &str = "https://bittrex.com/api/v1.1/account/getdeposithistory";

@@ -1,6 +1,20 @@
 use std::error::Error;
 use super::*;
 
+pub fn read_report_type() -> Result<ReportType, AppError> {
+    let args: Vec<String> = std::env::args().collect();
+    if args.len() < 2 {
+        Ok(ReportType::Deposits)
+    } else {
+        let arg = args[1].as_str();
+        match arg {
+            "deposits" => Ok(ReportType::Deposits),
+            "withdrawals" => Ok(ReportType::Withdrawals),
+            _ => Err(AppError::MissingOrInvalidReportType(arg.to_owned()))
+        }
+    }
+}
+
 pub fn read_credentials() -> Result<Credentials, AppError> {
     use yaml_rust::{YamlLoader, Yaml};
     read_yaml_string()
