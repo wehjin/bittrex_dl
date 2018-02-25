@@ -1,0 +1,12 @@
+[package]
+name = "bittrex_dl"
+version = "0.1.0"
+
+[dependencies]
+yaml-rust = "0.4"
+chrono = "0.4"
+hmac = "0.5.0"
+sha2 = "0.7.0"
+rustc-serialize = "0.3"
+reqwest = "0.8.5"
+hyper = "0.11.19"
