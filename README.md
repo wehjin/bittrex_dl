@@ -5,10 +5,10 @@ Download deposit and withdrawal histories from Bittrex exchange.
 
 Setup
 -----
-First, add a read-only api key to your Bittrex account from the settings
+Add a read-only api key to your Bittrex account from the settings
 section of the exchange website.
 
-Then, create a YAML file in your home directory named *.bittrex_dl.yaml* and
+Then create a YAML file in your home directory named *.bittrex_dl.yaml* and
 populate it with the api key and secret.
 
     api:
@@ -24,5 +24,3 @@ Withdrawals
 -----------
 
     bittrex_dl withdrawals > withdrawals.csv
-
-
