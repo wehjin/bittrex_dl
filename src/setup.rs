@@ -1,16 +1,19 @@
 use std::error::Error;
 use super::*;
 
+pub const REPORT_TYPE_DEPOSITS: &str = "deposits";
+pub const REPORT_TYPE_WITHDRAWALS: &str = "withdrawals";
+
 pub fn read_report_type() -> Result<ReportType, AppError> {
     let args: Vec<String> = std::env::args().collect();
     if args.len() < 2 {
-        Ok(ReportType::Deposits)
+        Err(AppError::MissingReportType)
     } else {
         let arg = args[1].as_str();
         match arg {
-            "deposits" => Ok(ReportType::Deposits),
-            "withdrawals" => Ok(ReportType::Withdrawals),
-            _ => Err(AppError::MissingOrInvalidReportType(arg.to_owned()))
+            REPORT_TYPE_DEPOSITS => Ok(ReportType::Deposits),
+            REPORT_TYPE_WITHDRAWALS => Ok(ReportType::Withdrawals),
+            _ => Err(AppError::InvalidReportType(arg.to_owned()))
         }
     }
 }
